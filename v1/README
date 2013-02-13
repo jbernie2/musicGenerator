@@ -1,0 +1,13 @@
+TO COMPILE:
+    javac midiTest.java
+
+TO RUN:
+    java midiTest 
+    (may run in infinte loop, if it does, just run it again,
+    when it works the program should complete almost instantly)
+
+TO HEAR THE RESULTS:
+    listen to midifile.mid
+ 
+FOR MORE INFORMATION:
+    see the main README in the root directory
