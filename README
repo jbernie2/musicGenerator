@@ -1,0 +1,45 @@
+Music Generator
+    java program that harmonizes chord progression based on a set of user defined rules
+    This repo contains two version of the project
+
+NOTE TO EMPLOYERS/ INTERESTED OTHERS:
+    V1 demonstrates the functionality of the program better than V2
+    V2 is better organized and demomonstrates my software design skills,
+        but is not yet fully functioning
+
+Contents:
+    V1: a proof of concept version of the program
+        to compile: javac midiTest.java
+        to run: java midiTest
+        Notes: may run in an infinite loop, due to its non-backtracking approach,
+                if this occurs just kill the program and retry 
+                    (it sometimes take up to 15 tries for it to work)
+
+    V2: a refactored version of the program that uses apache maven (not fully working yet)
+        to compile: mvn package
+        to run: I use a maven compiler plug-in to run the project, it may be
+                difficult to run it otherwise
+        NOTES: demonstrates understanding of OO design principals, and 
+                code documenting practices. All files are well commented and explained.
+        
+COMING SOON:
+    1. full functionality and unit tests for V2
+    2. An online demonstration of the project
+            
+Harmonization functionallity:
+    supports tonal and atonal harmony
+    supports any number of simultaneous voices
+        each voice can be given its properties. 
+            Including:
+                range
+                overlap with adjacent voices
+    can detect and avoid any type of parallel movement
+    can detect leaps of any kind, and can respond to leaps dynamically
+    can avoid unwanted intervals and/or scale degrees
+    can prevent voice crossing
+    all rules can be customized per voice/chord/chord type
+
+WHAT ABOUT THE MUSIC?
+    in the V1 folder there is a file name midifile.mid, which is the midifile output by the program.
+    Take a listen! It ended up working better than I thought.
+
