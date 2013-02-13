@@ -1,6 +1,7 @@
 Music Generator
-    java program that harmonizes chord progression based on a set of 
-    user defined rules
+    java program that harmonizes chord progression based on a set of rules
+    (currently the rules are static, but user defined rules will be 
+    implemented as well)
 
     This repo contains two version of the project
 
@@ -26,7 +27,10 @@ Contents:
         
 COMING SOON:
     1. full functionality and unit tests for V2
-    2. An online demonstration of the project
+    2. an interface to allow for user defined rules
+    3. interfacing functionality with the pgl language
+            (another project of mine)
+    4. An online demonstration of the project
             
 Harmonization functionallity:
     supports tonal and atonal harmony
