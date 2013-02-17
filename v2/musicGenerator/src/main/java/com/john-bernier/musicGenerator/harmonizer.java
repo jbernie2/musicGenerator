@@ -24,74 +24,115 @@ class harmonizer{
 		rand = new Random();
 	}
 	
+	//a backtracking algorithm that tries to find suitable notes
+	//for harmonizing the chord progession using the rules defined in
+	//voiceLeadingPofile.java
 	boolean harmonize(){
 		
-		//this function needs to be refactored, most of this can be moved
-		//into smaller, more readable functions
+		//each chord has three chances to be harmonized before the algorithm
+		//backtracks to the previous chord
+		int MAXITERATIONS = 3;
+		int iteration = 0;
+		
+		int position = 0, voice;
 		chord[] chords = progression.chords;
-		int position = 0;
-		int voice;
+		//this whole big loop just randomly chooses a valid midi note and
+		//checks if the note adheres to the counterpoint rules
 		while(position < chords.length){
-			System.out.println("position: "+position);
+			
 			//choose a random voice, if there is one left to pick from
-			System.out.println("voicesLeft: "+voicesLeft(position,chords));
 			if(voicesLeft(position,chords)){
-				do{
-					voice = rand.nextInt(voices.NUMVOICES);
-				}while(voiceLeading.harmonization[position][voice] != voices.UNUSED);
-				
+				//choose a voice to harmonize
+				voice = chooseVoice(position);
+
 				//get all notes from the current chord that are in the voices range
 				note[] notesInRange = getter.getValidNotes(position,voice);
-				int currentNoteIndex;
+				
 				//if there are any notes in the range of the voice, randomly choose one
-				System.out.println("notesLeft: "+notesLeft(notesInRange));
 				if(notesLeft(notesInRange)){
-					do{
-						System.out.println("here1");
-						currentNoteIndex = rand.nextInt(notesInRange.length);
-					}while(!notesLeft(notesInRange[currentNoteIndex]));
 					
-					//choose midi note version of the note, if there is a valid one to pick
-					note currentNote = notesInRange[currentNoteIndex];
-					int midiNoteToCheckIndex;
+					//choose a note from all the notes in range of the voice
+					note currentNote = chooseNote(notesInRange);
 					do{
-						System.out.println("here2");
-						midiNoteToCheckIndex = rand.nextInt(currentNote.midiNotesInRange.length);
-						if(voices.VALID(currentNote.midiNotesInRange[midiNoteToCheckIndex])){
-							//setting the chosen midi note to the primary value of the note object
-							currentNote.currentValue = currentNote.midiNotesInRange[midiNoteToCheckIndex];
-							//check if the note passes all the voice leading rules
-							if(voiceLeading.checkNote(currentNote,voice,position)){
-								//if the note passes, put the note into the harmonization
-								voiceLeading.harmonization[position][voice] = currentNote.currentValue;
-								break;
-							}
-							else{
-								//if the note does not pass, set it to INVALID
-								currentNote.midiNotesInRange[midiNoteToCheckIndex] = voices.INVALID;
-							}
+						//choose midi note version of the note
+						int midiNoteIndex = chooseMidiNote(currentNote);
+						currentNote.currentValue = currentNote.midiNotesInRange[midiNoteIndex];
+						
+						//check if the chose note passes all voice leading constraints
+						if(voiceLeading.checkNote(currentNote,voice,position)){
+							
+							//if the note passes, put the note into the harmonization
+							voiceLeading.harmonization[position][voice] = currentNote.currentValue;
+							break;
 						}
+						else{
+							//if the note does not pass, set it to INVALID
+							currentNote.midiNotesInRange[midiNoteIndex] = voices.INVALID;
+						}	
 					}while(notesLeft(currentNote));
 				}
 				if(!voices.VALID(voiceLeading.harmonization[position][voice])){
 					voiceLeading.harmonization[position][voice] = voices.INVALID;
+					if(iteration < MAXITERATIONS){
+						resetHarmonization(position);
+						iteration++;
+					}
 				}
 			}
 			else{
+				//if whole chord has been harmonized, continue to next chord
 				if(harmonizationComplete(position, chords)){
-					position++;		
+					position++;
+					iteration = 0;
 				}
 				else{
-					if(!backTrack(position)){
-						return false;
+					//try to harmonize the chord again
+					if(iteration < MAXITERATIONS){
+						resetHarmonization(position);
+						iteration++;
 					}
-					position--;
+					else{
+						//try to backtrack
+						if(!backTrack(position)){
+							return false;
+						}
+						else{
+							position--;
+							iteration = 0;
+						}
+					}
 				}
 			}
 		}
 		return true;
 	}
 	
+	//randomly choose a voice to harmonize
+	private int chooseVoice(int position){
+		int voice;
+		do{
+			voice = rand.nextInt(voices.NUMVOICES);
+		}while(voiceLeading.harmonization[position][voice] != voices.UNUSED);
+		return voice;
+	}
+	//randomly choose a note object from the array of note objects
+	private note chooseNote(note[] notesInRange){
+		int noteIndex;
+		do{
+			noteIndex = rand.nextInt(notesInRange.length);
+		}while(!notesLeft(notesInRange[noteIndex]));
+		
+		return notesInRange[noteIndex];
+	}
+	//randomly choose a midiNote from the note object
+	private int chooseMidiNote(note currentNote){
+		int midiNoteIndex;
+		do{
+			midiNoteIndex = rand.nextInt(currentNote.midiNotesInRange.length);
+		}while(!voices.VALID(currentNote.midiNotesInRange[midiNoteIndex]));
+		
+		return midiNoteIndex;
+	}
 	//check if there are voices left to be filled in
 	private boolean voicesLeft(int position, chord[] chords){
 		for(int i = 0; i < voices.NUMVOICES; i++){
@@ -101,6 +142,7 @@ class harmonizer{
 		}
 		return false;
 	}
+	//checks if all voices have a valid note at a position 
 	private boolean harmonizationComplete(int position, chord[] chords){
 		for(int i = 0; i < voices.NUMVOICES; i++){
 			if(!voices.VALID(voiceLeading.harmonization[position][i])){
@@ -109,6 +151,7 @@ class harmonizer{
 		}
 		return true;
 	}
+	//checks if a chord has any notes left to be tried
 	private boolean notesLeft(note[] notes){
 		for(int i = 0; i < notes.length; i++){
 			if(notesLeft(notes[i])){
@@ -117,6 +160,7 @@ class harmonizer{
 		}
 		return false;
 	}
+	//checks if there are any octaves of a note left to try
 	private boolean notesLeft(note currentNote){
 		for(int i = 0; i < currentNote.midiNotesInRange.length; i++){
 			if(voices.VALID(currentNote.midiNotesInRange[i])){
@@ -125,14 +169,22 @@ class harmonizer{
 		}
 		return false;
 	}
+	//determines if backtracking is possible
+	//the algorithm can not back track if it is already on the first chord
 	private boolean backTrack(int position){
 		if(position - 1 < 0){
 			return false;	
 		}
 		for(int i = 0; i < voices.NUMVOICES; i++){
-			voiceLeading.harmonization[position][i] = voices.UNUSED;
-			voiceLeading.harmonization[position-1][i] = voices.UNUSED;
+			resetHarmonization(position);
+			resetHarmonization(position -1);
 		}
 		return true;
+	}
+	//resets a single chord position in the harmonization
+	private void resetHarmonization(int position){
+		for(int i = 0; i < voices.NUMVOICES; i++){
+			voiceLeading.harmonization[position][i] = voices.UNUSED;
+		}
 	}
 }

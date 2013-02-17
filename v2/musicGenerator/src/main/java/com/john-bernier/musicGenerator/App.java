@@ -46,7 +46,7 @@ public class App
 			boolean worked = h.harmonize();
 			harmonization = h.voiceLeading.harmonization;
 			if(worked){
-				for(int i = 0; i < harmonization[0].length; i++){
+				for(int i = harmonization[0].length -1; i >= 0; i--){
 					for(int j = 0; j < harmonization.length; j++){
 						System.out.print(harmonization[j][i]+"  ");
 					}
