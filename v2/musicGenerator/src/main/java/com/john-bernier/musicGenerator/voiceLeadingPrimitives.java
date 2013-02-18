@@ -12,22 +12,25 @@ class voiceLeadingPrimitives{
 	
 	chord[] chords;
 	voicingConstants voices;
-	int[][] harmonization;
+	//int[][] harmonization;
+	note[][] harmonization;
 	
-	voiceLeadingPrimitives(chord[] chords, voicingConstants voices){
+	voiceLeadingPrimitives(chord[] chords, note[][] harmonization, voicingConstants voices){
 		this.chords = chords;
 		this.voices = voices; 
-		this.harmonization = new int[chords.length][voices.NUMVOICES];
-		intialize(harmonization);
+		harmonization = new note[chords.length][voices.NUMVOICES];
+		initialize(harmonization);
+		this.harmonization = harmonization;
 	}
-	
 	//generalized function that can check for parallel intervals of any type
 	//and can check for parallel sequences of that interval of any length
-	boolean parallel(int[] interval, int sequenceLength, int note, int voice, int position){
+	boolean parallel(int[] interval, int sequenceLength, note currentNote, int voice, int position){
 		
 		//if the chord is at an earlier position than the sequence length
 		//that the sequence can not have occured because not enough chords have been
 		//played
+		int note = currentNote.currentValue;
+		
 		if(position < sequenceLength-1){
 			return true;
 		}
@@ -36,7 +39,7 @@ class voiceLeadingPrimitives{
 		//the desired interval with the given voice for as far back as the 
 		//the sequence requires
 		int[][] parallelVoices = new int[sequenceLength][];
-		parallelVoices[0] = findParallels(interval,note,voice,position);
+		parallelVoices[0] = findParallels(interval,currentNote,voice,position);
 		//if the sequence length is 1, than the rule is just checking to see if
 		//there are any intervals of the provided type between the voice and 
 		//the current harmony of the current chord
@@ -54,8 +57,9 @@ class voiceLeadingPrimitives{
 	}
 	//find the set of notes that are the specified interval away from the provided
 	//note
-	int[] findParallels(int[] interval,int note, int voice, int position){
+	int[] findParallels(int[] interval, note currentNote, int voice, int position){
 		
+		int note = currentNote.currentValue;
 		LinkedList<Integer> parallels = new LinkedList<Integer>();
 		
 		for(int i = 0; i < harmonization[position].length;i++){
@@ -73,8 +77,8 @@ class voiceLeadingPrimitives{
 				boolean intervalFound = false;
 				for(int j = 0; j < interval.length; j++){
 					//make sure that a valid note is being checked
-					if(voices.VALID(harmonization[position][i])){					
-						if(Math.abs(harmonization[position][i] - note) == interval[j]){
+					if(voices.VALID(harmonization[position][i].currentValue)){					
+						if(Math.abs(harmonization[position][i].currentValue - note) == interval[j]){
 							intervalFound = true;
 						}
 					}
@@ -124,7 +128,9 @@ class voiceLeadingPrimitives{
 	//following a leap upwards
 	boolean leap(int[] upIntervals, int[] downIntervals, int[] upUpResponse,
 						 int[] upDownResponse, int[] downUpResponse,int[] downDownResponse,
-						 int note, int voice, int position){
+						 note currentNote, int voice, int position){
+		int note = currentNote.currentValue;
+	
 		if(position < 2){
 			return true;
 		}
@@ -133,13 +139,13 @@ class voiceLeadingPrimitives{
 			//if an upward leap in the previous two notes was detected
 			//check if the potential new note follows the guide lines for
 			//of counterpoint following the leap
-			if(detectLeap(upUpResponse,note,voice,position) == 1){
+			if(detectLeap(upUpResponse,currentNote,voice,position) == 1){
 				return true;
 			}
 			//normally counterpoint does not allow for upward motion after
 			//an upward leap, but if someone wanted to make that part of thier
 			//counterpoint rules, they could
-			else if(detectLeap(upDownResponse,note,voice,position) == -1){
+			else if(detectLeap(upDownResponse,currentNote,voice,position) == -1){
 				return true;
 			}
 			else{
@@ -148,10 +154,10 @@ class voiceLeadingPrimitives{
 		}
 		//does the same thing as the above block, except for downward leaps
 		else if(detectLeap(downIntervals,harmonization[position-1][voice],voice,position-1) == -1){
-			if(detectLeap(downUpResponse,note,voice,position) == 1){
+			if(detectLeap(downUpResponse,currentNote,voice,position) == 1){
 				return true;
 			}
-			else if(detectLeap(downDownResponse,note,voice,position) == -1){
+			else if(detectLeap(downDownResponse,currentNote,voice,position) == -1){
 				return true;
 			}
 			else{
@@ -163,13 +169,15 @@ class voiceLeadingPrimitives{
 		}
 	}
 	//checks if a leap has occurred
-	int detectLeap(int[] interval, int note, int voice, int position){
+	int detectLeap(int[] interval, note currentNote, int voice, int position){
+		
+		int note = currentNote.currentValue;
 		
 		//checking if the previous note would cause 
 		for(int i = 0; i < interval.length; i++){
-			if(Math.abs(harmonization[position-1][voice] - note) == interval[i]){
+			if(Math.abs(harmonization[position-1][voice].currentValue - note) == interval[i]){
 				//checking if it is a leap up or a leap down
-				if(harmonization[position-1][voice] - note < 0){
+				if(harmonization[position-1][voice].currentValue - note < 0){
 					//leap up returns positive
 					return 1;
 				}
@@ -183,12 +191,14 @@ class voiceLeadingPrimitives{
 		return 0;
 	}
 	//limits how far a voice can leap
-	boolean maxLeap(int maxLeap, int note, int voice, int position){
+	boolean maxLeap(int maxLeap, note currentNote, int voice, int position){
+		
+		int note = currentNote.currentValue;
 		
 		if(position < 1){
 			return true;	
 		}
-		if(Math.abs(harmonization[position-1][voice] - note) <= maxLeap){
+		if(Math.abs(harmonization[position-1][voice].currentValue - note) <= maxLeap){
 			return true;
 		}
 		else{
@@ -196,12 +206,15 @@ class voiceLeadingPrimitives{
 		}
 	}
 	//disallows voice line crossing
-	boolean voiceCrossing(int note, int voice, int position){
+	boolean voiceCrossing(note currentNote, int voice, int position){
+		
+		int note = currentNote.currentValue;
+		
 		//check to make sure that the note is lower than the voices above it
 		for(int i = voice; i < voices.NUMVOICES; i++){
 			//dont check voices that haven't been assigned notes
-			if(voices.VALID(harmonization[position][i])){
-				if(harmonization[position][i] < note){
+			if(voices.VALID(harmonization[position][i].currentValue)){
+				if(harmonization[position][i].currentValue < note){
 					return true;
 				}
 			}
@@ -209,8 +222,8 @@ class voiceLeadingPrimitives{
 		//check to make sure that the note is higher than the voices below it
 		for(int i = voice; i >= 0; i--){
 			//dont check voices that haven't been assigned notes
-			if(voices.VALID(harmonization[position][i])){
-				if(harmonization[position][i] > note){
+			if(voices.VALID(harmonization[position][i].currentValue)){
+				if(harmonization[position][i].currentValue > note){
 					return true;
 				}
 			}
@@ -218,15 +231,17 @@ class voiceLeadingPrimitives{
 		return false;
 	}
 	//limits how far adjacent voices can be apart
-	boolean maxVoiceDistance(int maxDistance, int note, int voice, int position){
+	boolean maxVoiceDistance(int maxDistance,note currentNote, int voice, int position){
+		
+		int note = currentNote.currentValue;
 		
 		//if the current voice is not the top voice
 		if(voice+1 < voices.NUMVOICES){
 			//and the note assigned to it is valid
-			if(voices.VALID(harmonization[position][voice+1])){
+			if(voices.VALID(harmonization[position][voice+1].currentValue)){
 				//check to see if the distance between the two notes is less than
 				//the maximum allowed distance
-				if(Math.abs(harmonization[position][voice+1] - note) > maxDistance){
+				if(Math.abs(harmonization[position][voice+1].currentValue - note) > maxDistance){
 					return false;	
 				}
 			}
@@ -234,10 +249,10 @@ class voiceLeadingPrimitives{
 		//if current voice is not the bottom voice
 		if(voice-1 > 0){
 			//and the note assigned to it is valid
-			if(voices.VALID(harmonization[position][voice-1])){
+			if(voices.VALID(harmonization[position][voice-1].currentValue)){
 				//check to see if the distance between the two notes is less than
 				//the maximum allowed distance
-				if(Math.abs(harmonization[position][voice-1] - note) > maxDistance){
+				if(Math.abs(harmonization[position][voice-1].currentValue - note) > maxDistance){
 					return false;	
 				}
 			}
@@ -247,24 +262,26 @@ class voiceLeadingPrimitives{
 	}
 	//forbids certain types of leaps and intervals
 	boolean forbidden(int[] leapsUp, int[] leapsDown, int[] intervals,
-					  int note, int voice, int position){
+					  note currentNote, int voice, int position){
+		
+		int note = currentNote.currentValue;
 	
 		if(position > 0){
 			//checking for invalid upward leaps
 			for(int i = 0; i < leapsUp.length; i++){
-				if(detectLeap(leapsUp,note,voice,position) == 1){
+				if(detectLeap(leapsUp,currentNote,voice,position) == 1){
 					return false;
 				}
 			}
 			//checking for invalid downward leaps
 			for(int i = 0; i < leapsDown.length; i++){
-				if(detectLeap(leapsDown,note,voice,position) == -1){
+				if(detectLeap(leapsDown,currentNote,voice,position) == -1){
 					return false;
 				}
 			}
 		}
 		//checking for invalid intervals
-		if(findParallels(intervals,note,voice,position).length > 0){
+		if(findParallels(intervals,currentNote,voice,position).length > 0){
 			return false;
 		}
 		return true;
@@ -334,10 +351,11 @@ class voiceLeadingPrimitives{
 		}
 		return returnArray;
 	}
-	private void intialize(int [][] a){
+	private void initialize(note [][] a){
 		for(int i = 0; i < a.length; i++){
 			for(int j = 0; j < a[i].length; j++){
-				a[i][j] = voices.UNUSED;	
+				a[i][j] = new note();
+				a[i][j].currentValue = voices.UNUSED;
 			}
 		}
 	}

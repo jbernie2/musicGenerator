@@ -3,14 +3,15 @@
 *voiceLeadingProfile.java:
 *	A customized set of voiceLeading rules, I will hardcode them for now,
 *	but in the future the user will be able to pass in the rules they want to use
+*	most likely through some sort of graphical interface or config file
 */
 
 package com.john.bernier.musicGenerator;
 
 class voiceLeadingProfile extends voiceLeadingPrimitives{
 	
-	voiceLeadingProfile(chord[] chords, voicingConstants voices){
-		super(chords, voices);	
+	voiceLeadingProfile(chord[] chords, note[][] harmonization, voicingConstants voices){
+		super(chords, harmonization, voices);	
 	}
 	
 	boolean checkNote(note currentNote, int voice, int position){
@@ -20,22 +21,22 @@ class voiceLeadingProfile extends voiceLeadingPrimitives{
 		
 		//forbids leaps of sevenths
 		rules[0] = forbidden(new int[]{10,11}, new int[]{10,11},new int[] {0},
-							 currentNote.currentValue,voice,position);
+							 currentNote,voice,position);
 		
 		//forbids parallel fifths
-		rules[1] = parallel(new int[]{7},2,currentNote.currentValue,voice,position);
+		rules[1] = parallel(new int[]{7},2,currentNote,voice,position);
 		//forbids parallel octaves
-		rules[2] = parallel(new int[]{12},2,currentNote.currentValue,voice,position);
+		rules[2] = parallel(new int[]{12},2,currentNote,voice,position);
 		//allows for leaps of fifths, sixths, and octaves, if followed by
 		//opposite motion by a second or third
 		rules[3] = leap(new int[] {7,8,9,12}, new int[]{7,8,9,12},emptyArray, 
 						new int[] {1,2,3,4},new int[] {1,2,3,4}, emptyArray, 
-						currentNote.currentValue,voice,position);
+						currentNote,voice,position);
 		//restricts largest leap to an octave			   	   	   
-		rules[4] = maxLeap(12,currentNote.currentValue,voice,position);
+		rules[4] = maxLeap(12,currentNote,voice,position);
 		
 		//disallow voice crossing
-		rules[5] = !voiceCrossing(currentNote.currentValue,voice,position);
+		rules[5] = !voiceCrossing(currentNote,voice,position);
 		
 		//disallow fifths as the root note on triads
 		if(checkChordType(position,new String[] {"triad"})){

@@ -10,18 +10,34 @@ import java.util.Random;
 
 class harmonizer{
 	
-	chordProgression progression; 
-	voicingConstants voices;
-	voiceLeadingProfile voiceLeading;
-	noteGetter getter;
 	Random rand;
+	noteGetter getter;
+	voicingConstants voices;
+	chordProgression progression; 
+	voiceLeadingProfile voiceLeading;
+	
+	note[][] harmonization;
+	
 	harmonizer(chordProgression progression, voicingConstants voices){
+		
+		this.voices = voices;
 		this.progression = progression;
 		this.progression.createChordArray();
-		this.voices = voices;
-		this.voiceLeading = new voiceLeadingProfile(progression.chords,voices);
+		this.voiceLeading = new voiceLeadingProfile(progression.chords, progression.harmonization, voices);
 		getter = new noteGetter(progression.chords,voices);
 		rand = new Random();
+		this.harmonization = voiceLeading.harmonization;
+		progression.harmonization = voiceLeading.harmonization;
+		
+		/*
+		System.out.println("this.harmonization");
+		for(int i = 0; i < this.harmonization.length; i++){
+			for(int j = 0; j < this.harmonization[i].length; j++){
+				System.out.println(this.harmonization[i][j].currentValue);
+			}
+		}
+		*/
+		
 	}
 	
 	//a backtracking algorithm that tries to find suitable notes
@@ -62,7 +78,8 @@ class harmonizer{
 						if(voiceLeading.checkNote(currentNote,voice,position)){
 							
 							//if the note passes, put the note into the harmonization
-							voiceLeading.harmonization[position][voice] = currentNote.currentValue;
+							harmonization[position][voice] = currentNote;
+							
 							break;
 						}
 						else{
@@ -71,8 +88,8 @@ class harmonizer{
 						}	
 					}while(notesLeft(currentNote));
 				}
-				if(!voices.VALID(voiceLeading.harmonization[position][voice])){
-					voiceLeading.harmonization[position][voice] = voices.INVALID;
+				if(!voices.VALID(harmonization[position][voice].currentValue)){
+					harmonization[position][voice].currentValue = voices.INVALID;
 					if(iteration < MAXITERATIONS){
 						resetHarmonization(position);
 						iteration++;
@@ -112,7 +129,7 @@ class harmonizer{
 		int voice;
 		do{
 			voice = rand.nextInt(voices.NUMVOICES);
-		}while(voiceLeading.harmonization[position][voice] != voices.UNUSED);
+		}while(harmonization[position][voice].currentValue != voices.UNUSED);
 		return voice;
 	}
 	//randomly choose a note object from the array of note objects
@@ -136,7 +153,7 @@ class harmonizer{
 	//check if there are voices left to be filled in
 	private boolean voicesLeft(int position, chord[] chords){
 		for(int i = 0; i < voices.NUMVOICES; i++){
-			if(voiceLeading.harmonization[position][i] == voices.UNUSED){
+			if(harmonization[position][i].currentValue == voices.UNUSED){
 				return true;	
 			}
 		}
@@ -145,7 +162,7 @@ class harmonizer{
 	//checks if all voices have a valid note at a position 
 	private boolean harmonizationComplete(int position, chord[] chords){
 		for(int i = 0; i < voices.NUMVOICES; i++){
-			if(!voices.VALID(voiceLeading.harmonization[position][i])){
+			if(!voices.VALID(harmonization[position][i].currentValue)){
 				return false;	
 			}
 		}
@@ -184,7 +201,7 @@ class harmonizer{
 	//resets a single chord position in the harmonization
 	private void resetHarmonization(int position){
 		for(int i = 0; i < voices.NUMVOICES; i++){
-			voiceLeading.harmonization[position][i] = voices.UNUSED;
+			harmonization[position][i].currentValue = voices.UNUSED;
 		}
 	}
 }
