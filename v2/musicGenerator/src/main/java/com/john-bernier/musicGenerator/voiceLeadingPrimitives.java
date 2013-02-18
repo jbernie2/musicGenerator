@@ -286,6 +286,8 @@ class voiceLeadingPrimitives{
 		}
 		return true;
 	}
+	
+	
 	/*
 	//you can specify which notes are required to be played in chords
 	//requiredNotes is actually a list of scale degrees, not notes in the chord
@@ -351,6 +353,7 @@ class voiceLeadingPrimitives{
 		}
 		return returnArray;
 	}
+	//intializes an array to the constant UNUSED
 	private void initialize(note [][] a){
 		for(int i = 0; i < a.length; i++){
 			for(int j = 0; j < a[i].length; j++){

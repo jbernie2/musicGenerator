@@ -4,12 +4,13 @@
 *	The main function for testing the program
 *
 *TODO:
-*	1. make voiceLeadingPrimatives.java work with a note[][] instead of int[][]
+*	1. add more voice leading primitives (leading tone resolution) (note requirement)
 *	2. unit tests
 *	3. continue to refactor code
-*	4. add more voice leading primitives
+*	4. pgl integration
 *	5. move midi file creation to a separate file, separate package?
 *	6. possibly create sub packages for major components
+*	7. figure out how to pass in custom voice leading profiles
 */
 
 package com.john.bernier.musicGenerator;
