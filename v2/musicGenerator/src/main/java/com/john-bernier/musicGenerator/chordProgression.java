@@ -38,11 +38,9 @@ class chordProgression{
 		chords = chordList.toArray(new chord[0]);
 	}
 	//creates a harmonizer object
-	/*
 	void setHarmonizer(voicingConstants voices){
 		createChordArray();
 		this.voices = voices;
-		intializeHarmony(voices.NUMVOICES);
 		this.harmonizer = new harmonizer(this,voices);	
 	}
 	
@@ -51,13 +49,6 @@ class chordProgression{
 	boolean harmonize(){
 		return harmonizer.harmonize();
 	}
-	//create necesary arrays for harmonizing
-	void intializeHarmony(int voices){
-		midiHarmonization = new int[chords.length][voices];
-		harmonization = new note[chords.length][voices];
-		initializeArray(midiHarmonization);
-	}
-	*/
 	
 	//sets all positions in array to UNUSED, a constant found in musicConstants.java
 	void initializeArray(int[][] a){
@@ -116,5 +107,18 @@ class chordProgression{
 			}
 		}
 		return max+1;
+	}
+	
+	//outputting the chord progression as a midi file
+	void outputMidi(){
+		midifile m = new midifile();
+		for(int i = 0; i < harmonization.length; i++){
+			int[] chord = new int[harmonization[i].length];
+			for(int j = 0; j < harmonization[i].length; j++){
+				chord[j] = harmonization[i][j].currentValue;
+			}
+			m.setNotes(chord);	
+		}
+		m.endfile();
 	}
 }

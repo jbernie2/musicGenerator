@@ -23,6 +23,7 @@ public class App
         
         chord[] chords = new chord[3];
         chordProgression progression = new chordProgression(0);
+        voicingConstants voices;
         
         try{
         	//creating a chord progession to harmonize
@@ -34,25 +35,7 @@ public class App
 			}
 			
 			//creating a voicing profile
-			voicingConstants voices = new voicingConstants(4,31,17,9);
-			harmonizer h = new harmonizer(progression,voices);
-			h.harmonize();
-			
-			System.out.println(progression.toString());
-			
-			note[][] harmonization = progression.harmonization;
-			
-			//outputting a midi file
-			//will move this to another file at some point
-			midifile m = new midifile();
-			for(int i = 0; i < harmonization.length; i++){
-				int[] chord = new int[harmonization[i].length];
-				for(int j = 0; j < harmonization[i].length; j++){
-					chord[j] = harmonization[i][j].currentValue;
-				}
-				m.setNotes(chord);	
-			}
-			m.endfile();
+			 voices = new voicingConstants(4,31,17,9);
 			
 		}catch(invalidNoteException e){
 				System.out.println(e);	
@@ -62,5 +45,15 @@ public class App
 			System.out.println(e);	
 			return;
 		}
+		
+		//harmonize chord progression
+		progression.setHarmonizer(voices);
+		progression.harmonize();
+		
+		//format printing the chord progression
+		System.out.println(progression.toString());
+		
+		//outputting a midi file of the progression
+		progression.outputMidi();
 	}
 }

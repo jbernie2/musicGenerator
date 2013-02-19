@@ -6,6 +6,9 @@
  *
  * author  Karl Brown
  * last updated 2/24/2003
+ *
+ * modified by John Bernier
+ * last updated 2/13
  */
  
 package com.john.bernier.musicGenerator;
@@ -124,7 +127,7 @@ public class midifile
 		{
 			System.out.println("Exception caught " + e.toString());
 		} //catch
-		System.out.println("midifile end ");
+		//System.out.println("midifile end ");
 	} //main
 	public void setInterval(long newInterval)
 	{
