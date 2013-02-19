@@ -16,7 +16,7 @@ class voiceLeadingProfile extends voiceLeadingPrimitives{
 	
 	boolean checkNote(note currentNote, int voice, int position){
 	
-		boolean[] rules = new boolean[7];
+		boolean[] rules = new boolean[8];
 		int[] emptyArray = new int[0];
 		
 		//forbids leaps of sevenths
@@ -49,6 +49,16 @@ class voiceLeadingProfile extends voiceLeadingPrimitives{
 		}
 		else{
 			rules[6] = true;	
+		}
+		
+		//require triads to have root and fifth
+		if(checkChordType(position,new String[] {"triad"})){
+			rules[7] = requiredNotes(new int[][] {{0},{3,4}}, currentNote, position);
+		}else if(checkChordType(position,new String[] {"seventhChord"})){
+			rules[7] = requiredNotes(new int[][] {{0},{3,4},{10,11}}, currentNote, position);		
+		}
+		else{
+			rules[7] = true;	
 		}
 		
 		return allTrue(rules);

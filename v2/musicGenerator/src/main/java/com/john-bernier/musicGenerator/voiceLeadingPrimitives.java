@@ -287,58 +287,75 @@ class voiceLeadingPrimitives{
 		return true;
 	}
 	
-	
-	/*
-	//you can specify which notes are required to be played in chords
-	//requiredNotes is actually a list of scale degrees, not notes in the chord
-	//this allows the function to generalize
-	private boolean requiredNotes(int[] requiredNotes, int chordSize, int note, int position){
-		if(getChordSize(chords[position]) != chordSize){
+	//checks to see if a chord's voiceleading has the required intervals
+	//required intervals is a 2d array, each position is a list of notes required
+	//by the chord, each list only needs one note from it in the chord
+	//this allows for rules like "harmonization requires the 3rd and 7th of the chord,
+	//which could then be represented by {{3,4},{10,11}}, the numbers being the 
+	//chromatic distance of those intervals from the root, this also allows for the
+	//same rule to work for both major and minor chords, or variations of the same chord
+	boolean requiredNotes(int[][] requiredIntervals, note currentNote, int position){
+		
+		//all intervals that are already used in the harmonization
+		//get removed from the requiredIntervals array 
+		notesAlreadyInChord(requiredIntervals,position);
+		
+		//check if there are any required notes left to be used
+		if(notesLeft(requiredIntervals)){
+			//see if the note is needed in the chord
+			if(noteRequired(requiredIntervals,currentNote)){
+				return true;		
+			}
+			else{
+				return false;	
+			}
+		}
+		else{
 			return true;
 		}
-		//find all required notes that are yet to be used
-		int[] notesMissing = notesMissing(requiredNotes,position);
-		
-		//if there are no notes missing, return true
-		if(notesMissing.length == 0){
-			return true;	
+	}
+	//sub-method for requiredNotes()
+	//all intervals that are already used in the harmonization
+	//get removed from the requiredIntervals array 
+	private void notesAlreadyInChord(int[][] requiredIntervals, int position){
+		for(int i = 0; i < harmonization[position].length; i++){
+			for(int j = 0; j < requiredIntervals.length; j++){
+				for(int k = 0; k < requiredIntervals[j].length; k++){
+					if(harmonization[position][i].interval == requiredIntervals[j][k]){
+						requiredIntervals[j][k] = voices.UNUSED;
+					}
+				}
+			}
 		}
-		//check to see if the given note is one of those required notes
-		for(int i = 0; i < notesMissing.length; i++){
-			if((note%12) == (notesMissing[i]%12)){
+	}
+	//sub-method for requiredNotes()
+	//check if there are any required notes left to be used
+	private boolean notesLeft(int[][] requiredIntervals){
+		boolean notesLeft = true;
+		for(int i = 0; i < requiredIntervals.length; i++){
+			for(int j = 0; j < requiredIntervals[i].length; j++){
+				if(requiredIntervals[i][j] == voices.UNUSED){
+					notesLeft = false;
+				}
+			}
+			if(notesLeft){
 				return true;	
 			}
 		}
 		return false;
 	}
-	//finds which required scale degrees have not been used yet.
-	private int[] notesMissing(int[] requiredNotes,int position){
-		
-		LinkedList<Integer> notes = new LinkedList<Integer>();
-		
-		//for each required scaleDegree
-		for(int i = 0; i < requiredNotes.length; i++){
-			boolean noteNeeded = true;
-			//get the corresponding required note
-			int note = chords[position][requiredNotes[i]];
-			//check to see if the note has been used yet in the harmonization
-			for(int j = 0; j < harmonization[position].length; j++){
-				//if note is valid
-				if(harmonization[position][j] != voices.INVALID){
-					if((harmonization[position][j]%12) == (note%12)){
-						noteNeeded = false;
-					}
+	//sub-method for requiredNotes()
+	//see if the note is needed in the chord
+	private boolean noteRequired(int[][] requiredIntervals, note currentNote){
+		for(int j = 0; j < requiredIntervals.length; j++){
+			for(int k = 0; k < requiredIntervals[j].length; k++){
+				if(requiredIntervals[j][k] == currentNote.currentValue){
+					return true;	
 				}
 			}
-			//if the note has not been used, then add it to the list
-			if(noteNeeded){
-				notes.addFirst(note);	
-			}
 		}
-		return LinkedListToArray(notes);
+		return false;
 	}
-	*/
-
 	
 	//Theres a messy conversion between LinkedLists and int[]
 	//so I made a function to hide the ugliness

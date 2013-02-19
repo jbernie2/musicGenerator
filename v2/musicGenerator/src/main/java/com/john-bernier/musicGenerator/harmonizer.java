@@ -28,16 +28,6 @@ class harmonizer{
 		rand = new Random();
 		this.harmonization = voiceLeading.harmonization;
 		progression.harmonization = voiceLeading.harmonization;
-		
-		/*
-		System.out.println("this.harmonization");
-		for(int i = 0; i < this.harmonization.length; i++){
-			for(int j = 0; j < this.harmonization[i].length; j++){
-				System.out.println(this.harmonization[i][j].currentValue);
-			}
-		}
-		*/
-		
 	}
 	
 	//a backtracking algorithm that tries to find suitable notes
@@ -47,7 +37,7 @@ class harmonizer{
 		
 		//each chord has three chances to be harmonized before the algorithm
 		//backtracks to the previous chord
-		int MAXITERATIONS = 3;
+		int MAXITERATIONS = 10;
 		int iteration = 0;
 		
 		int position = 0, voice;

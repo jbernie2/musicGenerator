@@ -11,6 +11,7 @@
 *	5. move midi file creation to a separate file, separate package?
 *	6. possibly create sub packages for major components
 *	7. figure out how to pass in custom voice leading profiles
+*	8. might need a new note choosing algorithm, other than backtracking
 */
 
 package com.john.bernier.musicGenerator;
