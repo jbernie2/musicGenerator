@@ -6,9 +6,9 @@ Music Generator
     This repo contains two version of the project
 
 NOTE TO EMPLOYERS/ INTERESTED OTHERS:
-    V1 demonstrates the functionality of the program better than V2
-    V2 is better organized and demomonstrates my software design skills,
-        but is not yet fully functioning
+    V1 is a prototype proof-of-concept version of the program
+    V2 is better organized and demomonstrates my software design skill,
+        currently V2 has the same functionality as V1
 
 Contents:
     V1: a proof of concept version of the program
@@ -18,15 +18,16 @@ Contents:
                 if this occurs just kill the program and retry 
                     (it sometimes take up to 15 tries for it to work)
 
-    V2: a refactored version of the program that uses apache maven (not fully working yet)
+    V2: a refactored version of the program that uses apache maven
         to compile: mvn package
         to run: I use a maven compiler plug-in to run the project, it may be
-                difficult to run it otherwise
+                difficult to run it otherwise using maven,
+                To run without maven, see the README in the V2 directory
         NOTES: demonstrates understanding of OO design principals, and 
                 code documenting practices. All files are well commented and explained.
         
 COMING SOON:
-    1. full functionality and unit tests for V2
+    1. unit tests for V2
     2. an interface to allow for user defined rules
     3. interfacing functionality with the pgl language
             (another project of mine)
@@ -46,6 +47,7 @@ Harmonization functionallity:
     all rules can be customized per voice/chord/chord type
 
 WHAT ABOUT THE MUSIC?
-    in the V1 folder there is a file name midifile.mid, which is the midifile output by the program.
+    in the V1 folder there is a file name midifile.mid which is the output from the V1 version of the program
+    in V2/musicGenerator there is anoter file named midifile.mid which is the output from V2
     Take a listen! It ended up working better than I thought.
 
