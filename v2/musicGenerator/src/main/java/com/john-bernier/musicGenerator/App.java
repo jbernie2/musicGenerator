@@ -4,14 +4,17 @@
 *	The main function for testing the program
 *
 *TODO:
-*	1. add more voice leading primitives (leading tone resolution) (note requirement)
+*	test leading tone resolution functionality in voiceLeadingPrimitives
+*
+*	1. add more voice leading primitives (leading tone resolution)
 *	2. unit tests
 *	3. continue to refactor code
 *	4. pgl integration
-*	5. move midi file creation to a separate file, separate package?
-*	6. possibly create sub packages for major components
-*	7. figure out how to pass in custom voice leading profiles
-*	8. might need a new note choosing algorithm, other than backtracking
+*	5. possibly create sub packages for major components
+*	6. figure out how to pass in custom voice leading profiles
+*	7. might need a new note choosing algorithm, other than backtracking
+*		constraint satisfaction could replace both the note choosing and
+*		the rule checking
 */
 
 package com.john.bernier.musicGenerator;

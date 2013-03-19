@@ -2,6 +2,7 @@
 *Author: John Bernier 2/13
 *voiceLeadingPrimatives.java:
 *	basic/generalized voice leading rule functions 
+*
 */
 
 package com.john.bernier.musicGenerator;
@@ -356,6 +357,34 @@ class voiceLeadingPrimitives{
 		}
 		return false;
 	}
+	//allows for given scale degrees to have to resolve in certain ways
+	//this is useful for leading tones, but could be used for other things
+	boolean noteResolution(int[] scaleDegrees, int[] resolutionsUp, int[] resolutionsDown,
+						   note currentNote, int position, int voice){
+		if(checkScaleDegree(position-1,voice,scaleDegrees)){
+			for(int i = 0; i < resolutionsUp.length; i++){
+				if(Math.abs(currentNote.currentValue-harmonization[position-1][voice].currentValue) == resolutionsUp[i]){
+					return true;
+				}
+			}
+			for(int i = 0; i < resolutionsDown.length; i++){
+				if(Math.abs(currentNote.currentValue-harmonization[position-1][voice].currentValue) == resolutionsDown[i]){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	boolean checkScaleDegree(int position, int voice, int[] scaleDegrees){
+		for(int i = 0; i < scaleDegrees.length; i++){
+			if(chords[position].relativeKey + chords[position].getNote(voice).setClass == scaleDegrees[i]){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	//HELPER FUNCTIONS
 	
 	//Theres a messy conversion between LinkedLists and int[]
 	//so I made a function to hide the ugliness

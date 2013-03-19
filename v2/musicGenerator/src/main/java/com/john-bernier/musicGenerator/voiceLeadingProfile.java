@@ -10,8 +10,11 @@ package com.john.bernier.musicGenerator;
 
 class voiceLeadingProfile extends voiceLeadingPrimitives{
 	
-	voiceLeadingProfile(chord[] chords, note[][] harmonization, voicingConstants voices){
-		super(chords, harmonization, voices);	
+	chordProgression progression;
+	
+	voiceLeadingProfile(chordProgression progression, note[][] harmonization, voicingConstants voices){
+		super(progression.chords, harmonization, voices);
+		this.progression = progression;
 	}
 	
 	boolean checkNote(note currentNote, int voice, int position){
@@ -48,7 +51,7 @@ class voiceLeadingProfile extends voiceLeadingPrimitives{
 			}
 		}
 		else{
-			rules[6] = true;	
+			rules[6] = true;
 		}
 		
 		//require triads to have root and fifth
@@ -60,6 +63,9 @@ class voiceLeadingProfile extends voiceLeadingPrimitives{
 		else{
 			rules[7] = true;	
 		}
+		
+		//leading tone resolution
+		
 		
 		return allTrue(rules);
 	}

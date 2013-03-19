@@ -23,7 +23,7 @@ class harmonizer{
 		this.voices = voices;
 		this.progression = progression;
 		this.progression.createChordArray();
-		this.voiceLeading = new voiceLeadingProfile(progression.chords, progression.harmonization, voices);
+		this.voiceLeading = new voiceLeadingProfile(progression, progression.harmonization, voices);
 		getter = new noteGetter(progression.chords,voices);
 		rand = new Random();
 		this.harmonization = voiceLeading.harmonization;
