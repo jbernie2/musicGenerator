@@ -37,7 +37,7 @@ class harmonizer{
 		
 		//each chord has three chances to be harmonized before the algorithm
 		//backtracks to the previous chord
-		int MAXITERATIONS = 10;
+		int MAXITERATIONS = 100;
 		int iteration = 0;
 		
 		int position = 0, voice;

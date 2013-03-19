@@ -19,7 +19,7 @@ class voiceLeadingProfile extends voiceLeadingPrimitives{
 	
 	boolean checkNote(note currentNote, int voice, int position){
 	
-		boolean[] rules = new boolean[8];
+		boolean[] rules = new boolean[9];
 		int[] emptyArray = new int[0];
 		
 		//forbids leaps of sevenths
@@ -65,7 +65,8 @@ class voiceLeadingProfile extends voiceLeadingPrimitives{
 		}
 		
 		//leading tone resolution
-		
+		rules[8] = noteResolution(new int[]{11},new int[]{1,2}, new int[]{1,2},
+								  currentNote, position, voice);
 		
 		return allTrue(rules);
 	}

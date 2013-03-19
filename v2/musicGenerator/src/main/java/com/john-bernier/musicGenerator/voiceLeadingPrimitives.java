@@ -361,6 +361,9 @@ class voiceLeadingPrimitives{
 	//this is useful for leading tones, but could be used for other things
 	boolean noteResolution(int[] scaleDegrees, int[] resolutionsUp, int[] resolutionsDown,
 						   note currentNote, int position, int voice){
+		if(position < 1){
+			return true;
+		}
 		if(checkScaleDegree(position-1,voice,scaleDegrees)){
 			for(int i = 0; i < resolutionsUp.length; i++){
 				if(Math.abs(currentNote.currentValue-harmonization[position-1][voice].currentValue) == resolutionsUp[i]){
@@ -372,12 +375,13 @@ class voiceLeadingPrimitives{
 					return true;
 				}
 			}
+			return false;
 		}
-		return false;
+		return true;
 	}
 	boolean checkScaleDegree(int position, int voice, int[] scaleDegrees){
 		for(int i = 0; i < scaleDegrees.length; i++){
-			if(chords[position].relativeKey + chords[position].getNote(voice).setClass == scaleDegrees[i]){
+			if((chords[position].relativeKey + harmonization[position][voice].setClass)%12 == scaleDegrees[i]){
 				return true;
 			}
 		}
