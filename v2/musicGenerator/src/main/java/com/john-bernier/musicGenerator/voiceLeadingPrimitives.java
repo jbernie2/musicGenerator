@@ -365,6 +365,7 @@ class voiceLeadingPrimitives{
 			return true;
 		}
 		if(checkScaleDegree(position-1,voice,scaleDegrees)){
+			System.out.println("leading tone found at position "+(position-1)+", voice "+voice);
 			for(int i = 0; i < resolutionsUp.length; i++){
 				if(Math.abs(currentNote.currentValue-harmonization[position-1][voice].currentValue) == resolutionsUp[i]){
 					return true;
@@ -381,7 +382,7 @@ class voiceLeadingPrimitives{
 	}
 	boolean checkScaleDegree(int position, int voice, int[] scaleDegrees){
 		for(int i = 0; i < scaleDegrees.length; i++){
-			if((chords[position].relativeKey + harmonization[position][voice].setClass)%12 == scaleDegrees[i]){
+			if((harmonization[position][voice].setClass)%12 == (chords[position].relativeKey +scaleDegrees[i])%12){
 				return true;
 			}
 		}

@@ -10,7 +10,7 @@ package com.john.bernier.musicGenerator;
 class seventhChord extends tonalChord{
 	
 	seventhChord(String name, int[] notes, int root, int relativeKey) throws malformedChordException{
-		super(name);
+		super(name,relativeKey);
 		type = "seventhChord";
 		//there are four notes in a seventhChord, this enforces that rule
 		chordSize = 4;

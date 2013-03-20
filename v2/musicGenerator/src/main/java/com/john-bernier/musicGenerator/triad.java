@@ -10,7 +10,7 @@ package com.john.bernier.musicGenerator;
 class triad extends tonalChord{
 	
 	triad(String name, int[] notes, int root, int relativeKey) throws malformedChordException{
-		super(name);
+		super(name,relativeKey);
 		type = "triad";
 		//there are three notes in a triad, this enforces that rule
 		chordSize = 3;

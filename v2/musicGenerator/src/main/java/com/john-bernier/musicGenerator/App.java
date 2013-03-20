@@ -25,15 +25,19 @@ public class App
     {
         System.out.println("constructing chords");
         
-        chord[] chords = new chord[3];
+        chord[] chords = new chord[7];
         chordProgression progression = new chordProgression(0);
         voicingConstants voices;
         
         try{
         	//creating a chord progession to harmonize
 			chords[0] = new triad("I",new int[]{0,4,7},0,0);
-			chords[1] = new seventhChord("V7",new int[]{7,11,2,5},7,0);
-			chords[2] = new triad("I",new int[]{0,4,7},0,0);
+			chords[1] = new triad("ii",new int[]{2,5,9},2,0);
+			chords[2] = new seventhChord("V7",new int[]{7,11,2,5},7,0);
+			chords[3] = new triad("vi",new int[]{9,0,4},9,0);
+			chords[4] = new seventhChord("V7/V",new int[]{7,11,2,5},7,7);
+			chords[5] = new seventhChord("V7",new int[]{7,11,2,5},7,0);
+			chords[6] = new triad("I",new int[]{0,4,7},0,0);
 			for(int i = 0; i < chords.length; i++){
 				progression.addChord(chords[i]);	
 			}

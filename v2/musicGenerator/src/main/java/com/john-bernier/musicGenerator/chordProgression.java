@@ -30,7 +30,7 @@ class chordProgression{
 	}
 	//add chord to progression
 	void addChord(chord nextChord){
-		nextChord.updateNotes(key);
+		nextChord.updateNotes(key+nextChord.relativeKey);
 		chordList.addLast(nextChord);
 	}
 	//turns the linked list into a chord array

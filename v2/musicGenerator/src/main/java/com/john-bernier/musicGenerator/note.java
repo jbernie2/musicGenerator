@@ -63,15 +63,15 @@ class note{
 	//midi values range from 0 to 127
 	//finding all octaves of the note in the midi range
 	private void findMidiNotes(int note){
-		int length = ((c.MIDIMAX - setClass)/c.NUMNOTES) + 1;
+		int length = ((c.MIDIMAX - note)/c.NUMNOTES) + 1;
 		midiNotes = new int[length];
 		for(int i = 0; i < midiNotes.length; i++){
-			midiNotes[i] = i*c.NUMNOTES + setClass;
+			midiNotes[i] = i*c.NUMNOTES + note;
 		}
 	}
 	
 	void updateNotes(int key){
-		findMidiNotes(setClass+key);
+		findMidiNotes((setClass+key)%12);
 	}
 	//creates an identical copy of the note
 	note copyNote(note copy){

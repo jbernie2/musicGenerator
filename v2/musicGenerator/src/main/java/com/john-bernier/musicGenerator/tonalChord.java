@@ -8,9 +8,9 @@ package com.john.bernier.musicGenerator;
 
 abstract class tonalChord extends chord{
 	
-	tonalChord(String name){
+	tonalChord(String name,int relativeKey){
 		super(name);
-		relativeKey = 0;
+		this.relativeKey = relativeKey;
 	}
 	tonalChord(String name, int[] notes, int root, int relativeKey) throws malformedChordException{
 		

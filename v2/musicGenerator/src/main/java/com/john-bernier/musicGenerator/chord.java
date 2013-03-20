@@ -24,7 +24,6 @@ abstract class chord{
 	chord(String name){
 		this.name = name;
 		key = 0;
-		relativeKey = 0;
 		c =new musicConstants();
 	}
 	//this constructor assumes that the first note int the array is the root
@@ -49,6 +48,11 @@ abstract class chord{
 		this.key = key;
 		for(int i = 0; i < notes.length; i++){
 			notes[i].updateNotes(key);
+		}
+	}
+	void updateNotes(){
+		for(int i = 0; i < notes.length; i++){
+			notes[i].updateNotes(relativeKey);
 		}
 	}
 	
